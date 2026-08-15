@@ -1,0 +1,19 @@
+┌──────────────────────────────────────────────────┐
+│               ESGOKAN REGIONAL BANK              │
+│               ATM TRANSACTION RECEIPT            │
+├──────────────────────────────────────────────────┤
+│ Terminal: ATM-BLR-042       Branch: Central HQ   │
+│ Date/Time: 15-Aug-2026 08:35:47 PM               │
+│ Txn ID:    TXN-10001                             │
+├──────────────────────────────────────────────────┤
+│ Account No: XXXX-01                              │
+│ Card Holder: Manjari PA                          │
+│ Account Type: SAVINGS                            │
+├──────────────────────────────────────────────────┤
+│ Transaction:  DEPOSIT                            │
+│ Amount:       ₹500.00                            │
+│ Available Bal:₹5500.00                           │
+├──────────────────────────────────────────────────┤
+│ Thank you for banking with us!                   │
+│ 24x7 Customer Helpline: 1800-ESG-BANK            │
+└──────────────────────────────────────────────────┘

@@ -1,0 +1,70 @@
+{
+  "vault": {
+    "count500": 50,
+    "count200": 50,
+    "count100": 100
+  },
+  "accounts": [
+    {
+      "accountId": "1004",
+      "ownerName": "TechCorp Enterprise",
+      "pin": "5555",
+      "balance": 85000.00,
+      "accountType": "CURRENT",
+      "status": "ACTIVE",
+      "dailyLimit": 100000.00,
+      "dailyWithdrawn": 0.00,
+      "lastWithdrawalDate": "2026-08-15",
+      "history": [
+      ]
+    },
+    {
+      "accountId": "1003",
+      "ownerName": "Divya Sree",
+      "pin": "1111",
+      "balance": 750.00,
+      "accountType": "SAVINGS",
+      "status": "ACTIVE",
+      "dailyLimit": 15000.00,
+      "dailyWithdrawn": 0.00,
+      "lastWithdrawalDate": "2026-08-15",
+      "history": [
+      ]
+    },
+    {
+      "accountId": "1002",
+      "ownerName": "Arjun Kumar",
+      "pin": "4321",
+      "balance": 12500.50,
+      "accountType": "SAVINGS",
+      "status": "ACTIVE",
+      "dailyLimit": 25000.00,
+      "dailyWithdrawn": 0.00,
+      "lastWithdrawalDate": "2026-08-15",
+      "history": [
+      ]
+    },
+    {
+      "accountId": "1001",
+      "ownerName": "Manjari PA",
+      "pin": "1234",
+      "balance": 5500.00,
+      "accountType": "SAVINGS",
+      "status": "ACTIVE",
+      "dailyLimit": 20000.00,
+      "dailyWithdrawn": 0.00,
+      "lastWithdrawalDate": "2026-08-15",
+      "history": [
+        {
+          "id": "TXN-10001",
+          "type": "DEPOSIT",
+          "amount": 500.00,
+          "balanceAfter": 5500.00,
+          "description": "ATM Cash Deposit",
+          "noteBreakdown": "",
+          "timestamp": "2026-08-15T20:35:39.724808784"
+        }
+      ]
+    }
+  ]
+}
