@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Issued Books')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('issued')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Currently Issued Books</h2>
+            <p class="page-subtitle">Track active book loans, borrower records, and due dates.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Member</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="record : ${records}">
+                        <td>
+                            <strong th:text="${record.book.title}"></strong>
+                            <div style="font-size:0.82rem; color:var(--text-muted);" th:text="'by ' + ${record.book.author}"></div>
+                        </td>
+                        <td>
+                            <div th:text="${record.user.fullName}"></div>
+                            <div style="color:var(--text-muted); font-size:0.8rem;" th:text="${record.user.email}"></div>
+                        </td>
+                        <td th:text="${record.issueDate}"></td>
+                        <td th:text="${record.dueDate}"></td>
+                        <td>
+                            <span class="badge badge-danger" th:if="${record.overdue}">
+                                <span class="badge-dot"></span>Overdue
+                            </span>
+                            <span class="badge badge-success" th:unless="${record.overdue}">
+                                <span class="badge-dot"></span>On Time
+                            </span>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(records)}">
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-state-icon">📖</div>
+                            <h3>No Books Currently Issued</h3>
+                            <p>All library books are currently shelved in the catalogue.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

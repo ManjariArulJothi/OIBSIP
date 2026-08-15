@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('My Reservations')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: userNav('reservations')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Advance Bookings & Waitlists</h2>
+            <p class="page-subtitle">When checked-out books are returned, the next person in line receives a guaranteed 48-hour hold.</p>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/user/catalogue}">Browse Catalogue</a>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Reserved Date</th>
+                        <th>Status</th>
+                        <th>Hold Expiration Window</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${reservations}">
+                        <td>
+                            <strong th:text="${r.book.title}"></strong>
+                            <div style="font-size:0.82rem; color:var(--text-muted);" th:text="'by ' + ${r.book.author}"></div>
+                        </td>
+                        <td th:text="${#temporals.format(r.reservedAt, 'dd MMM yyyy, HH:mm')}"></td>
+                        <td>
+                            <span class="badge badge-muted" th:if="${r.status.name() == 'PENDING'}">
+                                <span class="badge-dot"></span>Waitlisted (In Queue)
+                            </span>
+                            <span class="badge badge-warning" th:if="${r.status.name() == 'READY'}">
+                                <span class="badge-dot"></span>Ready for Pickup!
+                            </span>
+                            <span class="badge badge-success" th:if="${r.status.name() == 'FULFILLED'}">
+                                <span class="badge-dot"></span>Claimed & Issued
+                            </span>
+                            <span class="badge badge-muted" th:if="${r.status.name() == 'CANCELLED'}">
+                                <span class="badge-dot"></span>Cancelled
+                            </span>
+                            <span class="badge badge-danger" th:if="${r.status.name() == 'EXPIRED'}">
+                                <span class="badge-dot"></span>Hold Expired
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${r.status.name() == 'READY' and r.holdExpiresAt != null}">
+                                <strong style="color:var(--warning);" th:text="${#temporals.format(r.holdExpiresAt, 'dd MMM yyyy, HH:mm')}"></strong>
+                            </span>
+                            <span th:unless="${r.status.name() == 'READY' and r.holdExpiresAt != null}" style="color:var(--text-dim);">—</span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:if="${r.status.name() == 'READY'}" th:action="@{/user/reservations/claim/{id}(id=${r.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Issue Now</button>
+                                </form>
+                                <form th:if="${r.status.name() == 'PENDING' or r.status.name() == 'READY'}"
+                                      th:action="@{/user/reservations/cancel/{id}(id=${r.id})}" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Cancel this reservation?');">
+                                    <button type="submit" class="btn btn-outline btn-sm">Cancel</button>
+                                </form>
+                                <span th:unless="${r.status.name() == 'PENDING' or r.status.name() == 'READY'}" style="color:var(--text-dim); font-size:0.85rem;">—</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(reservations)}">
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-state-icon">⏳</div>
+                            <h3>No Active Reservations</h3>
+                            <p>You haven't placed any advance bookings. When a book is fully checked out, you can join its waitlist.</p>
+                            <a class="btn btn-primary btn-sm" th:href="@{/user/catalogue}">Explore the Catalogue</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

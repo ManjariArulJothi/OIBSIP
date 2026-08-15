@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Admin Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('dashboard')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Welcome back, Administrator</h2>
+            <p class="page-subtitle">Here is a real-time overview of library resources, loans, and member requests.</p>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/admin/books/new}">+ Add New Book</a>
+        </div>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-indigo">📚</div>
+            <div class="stat-info">
+                <div class="num" th:text="${totalBooks}">0</div>
+                <div class="label">Total Titles</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-sky">📖</div>
+            <div class="stat-info">
+                <div class="num" th:text="${totalIssued}">0</div>
+                <div class="label">Books Issued</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-emerald">👥</div>
+            <div class="stat-info">
+                <div class="num" th:text="${totalMembers}">0</div>
+                <div class="label">Active Members</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-rose">💰</div>
+            <div class="stat-info">
+                <div class="num" th:text="${unpaidFines}">0</div>
+                <div class="label">Unpaid Fines</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-amber">⏳</div>
+            <div class="stat-info">
+                <div class="num" th:text="${pendingReservations}">0</div>
+                <div class="label">Reservations</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-violet">💬</div>
+            <div class="stat-info">
+                <div class="num" th:text="${newMessages}">0</div>
+                <div class="label">New Inquiries</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Quick Administration Actions</h3>
+        </div>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <a class="btn btn-primary" th:href="@{/admin/books/new}">+ Add New Book</a>
+            <a class="btn btn-outline" th:href="@{/admin/books}">Manage Catalogue</a>
+            <a class="btn btn-outline" th:href="@{/admin/issued-books}">Track Issued Books</a>
+            <a class="btn btn-outline" th:href="@{/admin/reservations}">Waitlists & Holds</a>
+            <a class="btn btn-outline" th:href="@{/admin/fines}">Fine Settlements</a>
+            <a class="btn btn-outline" th:href="@{/admin/members}">Member Directory</a>
+            <a class="btn btn-outline" th:href="@{/admin/messages}">Message Inbox</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Access Denied')}"></head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card" style="text-align: center;">
+        <div class="empty-state-icon" style="font-size:3rem; margin-bottom:12px;">🚫</div>
+        <h2>Access Restricted</h2>
+        <p style="color:var(--text-muted); margin: 10px 0 24px; font-size:0.95rem;">
+            You do not have the required permissions or role to view this page.
+        </p>
+        <div style="display:flex; gap:10px; justify-content:center;">
+            <a class="btn btn-primary" th:href="@{/}">Return to Dashboard</a>
+            <a class="btn btn-outline" th:href="@{/login}">Switch Account</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

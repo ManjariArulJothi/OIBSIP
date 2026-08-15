@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Join the Library')}"></head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-brand-center">
+            <div class="brand-icon">📚</div>
+            <h1>Join Athenaeum</h1>
+            <p class="subtitle">Create your library member account</p>
+        </div>
+
+        <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+        <form th:action="@{/register}" th:object="${registerForm}" method="post">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" th:field="*{fullName}" class="form-control" placeholder="e.g. Jane Doe" required autofocus>
+                <div class="form-help" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" style="color:var(--danger);"></div>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" th:field="*{email}" class="form-control" placeholder="jane@example.com" required>
+                <div class="form-help" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:var(--danger);"></div>
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="text" th:field="*{phone}" class="form-control" placeholder="+91 98765 43210">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" th:field="*{password}" class="form-control" placeholder="At least 6 characters" required minlength="6">
+                <div class="form-help" th:if="${#fields.hasErrors('password')}" th:errors="*{password}" style="color:var(--danger);"></div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Create Account</button>
+        </form>
+
+        <div class="auth-footer">
+            Already have a library account? <a th:href="@{/login}">Sign In</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

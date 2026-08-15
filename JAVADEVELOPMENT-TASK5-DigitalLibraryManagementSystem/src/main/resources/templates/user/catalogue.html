@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Book Catalogue')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: userNav('catalogue')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Library Book Catalogue</h2>
+            <p class="page-subtitle">Discover titles across genres, issue available copies, or place advance reservations.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/user/catalogue}" method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search by title or author…" th:value="${query}">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
+                    th:selected="${cat == selectedCategory}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        <a class="btn btn-outline btn-sm" th:href="@{/user/catalogue}">Reset</a>
+    </form>
+
+    <div class="book-grid">
+        <div class="book-card" th:each="book : ${books}">
+            <div class="book-category-tag">
+                <span class="badge badge-muted" th:text="${book.category}"></span>
+            </div>
+            
+            <h3 th:text="${book.title}"></h3>
+            <div class="author" th:text="'by ' + ${book.author}"></div>
+            
+            <div class="meta">
+                <div class="book-meta-row">
+                    <span>ISBN</span>
+                    <code style="font-size:0.8rem;" th:text="${book.isbn}"></code>
+                </div>
+                <div class="book-meta-row">
+                    <span>Availability</span>
+                    <span>
+                        <strong th:text="${book.availableQuantity}"></strong> / <span th:text="${book.totalQuantity}"></span> copies
+                    </span>
+                </div>
+                <div class="book-meta-row" style="margin-top:4px;">
+                    <span>Status</span>
+                    <span class="badge badge-success" th:if="${book.availableQuantity > 1}">
+                        <span class="badge-dot"></span>In Stock
+                    </span>
+                    <span class="badge badge-warning" th:if="${book.availableQuantity == 1}">
+                        <span class="badge-dot"></span>1 Copy Left
+                    </span>
+                    <span class="badge badge-danger" th:if="${book.availableQuantity == 0}">
+                        <span class="badge-dot"></span>Checked Out
+                    </span>
+                </div>
+            </div>
+
+            <div class="actions">
+                <!-- User already has this book issued -->
+                <button th:if="${#lists.contains(issuedBookIds, book.id)}" class="btn btn-disabled btn-sm" disabled>
+                    ✓ Issued to You
+                </button>
+
+                <!-- User already has this book reserved -->
+                <button th:if="${!#lists.contains(issuedBookIds, book.id) and #lists.contains(reservedBookIds, book.id)}" class="btn btn-disabled btn-sm" disabled>
+                    ⏳ In Waitlist
+                </button>
+
+                <!-- Available for issue -->
+                <form th:if="${!#lists.contains(issuedBookIds, book.id) and !#lists.contains(reservedBookIds, book.id) and book.availableQuantity > 0}"
+                      th:action="@{/user/books/issue/{id}(id=${book.id})}" method="post">
+                    <button type="submit" class="btn btn-success btn-sm">Issue Book</button>
+                </form>
+
+                <!-- Out of stock: reserve waitlist -->
+                <form th:if="${!#lists.contains(issuedBookIds, book.id) and !#lists.contains(reservedBookIds, book.id) and book.availableQuantity == 0}"
+                      th:action="@{/user/books/reserve/{id}(id=${book.id})}" method="post">
+                    <button type="submit" class="btn btn-warning btn-sm">Reserve (Waitlist)</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card empty-state" th:if="${#lists.isEmpty(books)}" style="grid-column: 1 / -1;">
+            <div class="empty-state-icon">🔍</div>
+            <h3>No Titles Matched</h3>
+            <p>We couldn't find any books matching your search or category filter.</p>
+            <a class="btn btn-primary btn-sm" th:href="@{/user/catalogue}">View All Books</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

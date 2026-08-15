@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Books')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('books')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Book Catalogue Management</h2>
+            <p class="page-subtitle">View, search, edit, or register new titles in the library inventory.</p>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/admin/books/new}">+ Add New Book</a>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <form th:action="@{/admin/books}" method="get" class="filter-bar">
+        <input type="text" name="q" placeholder="Search by title or author…" th:value="${query}">
+        <select name="category" onchange="this.form.submit()">
+            <option value="">All Categories</option>
+            <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}"
+                    th:selected="${cat == selectedCategory}"></option>
+        </select>
+        <button type="submit" class="btn btn-primary btn-sm">Search</button>
+        <a class="btn btn-outline btn-sm" th:href="@{/admin/books}">Reset</a>
+    </form>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title & Author</th>
+                        <th>ISBN</th>
+                        <th>Category</th>
+                        <th>Available / Total</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="book : ${books}">
+                        <td>
+                            <strong th:text="${book.title}"></strong>
+                            <div style="font-size:0.82rem; color:var(--text-muted);" th:text="'by ' + ${book.author}"></div>
+                        </td>
+                        <td><code style="font-size:0.85rem;" th:text="${book.isbn}"></code></td>
+                        <td><span class="badge badge-muted" th:text="${book.category}"></span></td>
+                        <td>
+                            <strong th:text="${book.availableQuantity}"></strong>
+                            <span style="color:var(--text-muted);" th:text="' / ' + ${book.totalQuantity}"></span>
+                        </td>
+                        <td>
+                            <span class="badge badge-success" th:if="${book.availableQuantity > 1}">
+                                <span class="badge-dot"></span>In Stock
+                            </span>
+                            <span class="badge badge-warning" th:if="${book.availableQuantity == 1}">
+                                <span class="badge-dot"></span>1 Left
+                            </span>
+                            <span class="badge badge-danger" th:if="${book.availableQuantity == 0}">
+                                <span class="badge-dot"></span>Out of Stock
+                            </span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a class="btn btn-outline btn-sm" th:href="@{/admin/books/edit/{id}(id=${book.id})}">Edit</a>
+                                <form th:action="@{/admin/books/delete/{id}(id=${book.id})}" method="post"
+                                      onsubmit="return confirm('Are you sure you want to delete this book?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(books)}">
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-state-icon">📚</div>
+                            <h3>No Books Found</h3>
+                            <p>No titles match the search criteria. Try adjusting your query or add a new book.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title} + ' · Digital Library'">Digital Library</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<!-- Admin Navbar -->
+<nav class="navbar" th:fragment="adminNav(active)">
+    <div class="nav-container">
+        <a th:href="@{/admin/dashboard}" class="brand">
+            <div class="brand-icon">📚</div>
+            <span>Athenaeum</span>
+            <span class="brand-badge">Admin</span>
+        </a>
+        <ul class="nav-links">
+            <li><a th:href="@{/admin/dashboard}" th:classappend="${active == 'dashboard' ? 'active' : ''}">Dashboard</a></li>
+            <li><a th:href="@{/admin/books}" th:classappend="${active == 'books' ? 'active' : ''}">Books</a></li>
+            <li><a th:href="@{/admin/issued-books}" th:classappend="${active == 'issued' ? 'active' : ''}">Issued Books</a></li>
+            <li><a th:href="@{/admin/reservations}" th:classappend="${active == 'reservations' ? 'active' : ''}">Reservations</a></li>
+            <li><a th:href="@{/admin/members}" th:classappend="${active == 'members' ? 'active' : ''}">Members</a></li>
+            <li><a th:href="@{/admin/fines}" th:classappend="${active == 'fines' ? 'active' : ''}">Fines</a></li>
+            <li><a th:href="@{/admin/messages}" th:classappend="${active == 'messages' ? 'active' : ''}">Messages</a></li>
+        </ul>
+        <div class="nav-user-section">
+            <div class="user-capsule">
+                <div class="user-avatar">A</div>
+                <span sec:authentication="name">admin@library.com</span>
+            </div>
+            <form th:action="@{/logout}" method="post" style="margin:0;">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- User Navbar -->
+<nav class="navbar" th:fragment="userNav(active)">
+    <div class="nav-container">
+        <a th:href="@{/user/dashboard}" class="brand">
+            <div class="brand-icon">📚</div>
+            <span>Athenaeum</span>
+            <span class="brand-badge">Member</span>
+        </a>
+        <ul class="nav-links">
+            <li><a th:href="@{/user/dashboard}" th:classappend="${active == 'dashboard' ? 'active' : ''}">Dashboard</a></li>
+            <li><a th:href="@{/user/catalogue}" th:classappend="${active == 'catalogue' ? 'active' : ''}">Catalogue</a></li>
+            <li><a th:href="@{/user/my-books}" th:classappend="${active == 'my-books' ? 'active' : ''}">My Books</a></li>
+            <li><a th:href="@{/user/reservations}" th:classappend="${active == 'reservations' ? 'active' : ''}">Reservations</a></li>
+            <li><a th:href="@{/contact}" th:classappend="${active == 'contact' ? 'active' : ''}">Contact</a></li>
+        </ul>
+        <div class="nav-user-section">
+            <div class="user-capsule">
+                <div class="user-avatar">U</div>
+                <span sec:authentication="name">User</span>
+            </div>
+            <form th:action="@{/logout}" method="post" style="margin:0;">
+                <button class="logout-btn" type="submit">Sign Out</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+</body>
+</html>
+

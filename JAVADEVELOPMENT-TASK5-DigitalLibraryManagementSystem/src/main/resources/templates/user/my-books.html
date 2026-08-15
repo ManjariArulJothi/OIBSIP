@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('My Borrowed Books')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: userNav('my-books')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>My Borrowing History</h2>
+            <p class="page-subtitle">Track your active loans, return dates, and any overdue fine balances (Standard Rate: ₹<span th:text="${finePerDay}">5</span>/day).</p>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/user/catalogue}">Browse Catalogue</a>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Issued On</th>
+                        <th>Due Date</th>
+                        <th>Returned On</th>
+                        <th>Status</th>
+                        <th>Fine Accrued</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${records}">
+                        <td>
+                            <strong th:text="${r.book.title}"></strong>
+                            <div style="font-size:0.82rem; color:var(--text-muted);" th:text="'by ' + ${r.book.author}"></div>
+                        </td>
+                        <td th:text="${r.issueDate}"></td>
+                        <td th:text="${r.dueDate}"></td>
+                        <td th:text="${r.returnDate} ?: '—'"></td>
+                        <td>
+                            <span class="badge badge-muted" th:if="${r.status.name() == 'RETURNED'}">
+                                <span class="badge-dot"></span>Returned
+                            </span>
+                            <span class="badge badge-danger" th:if="${r.status.name() == 'ISSUED' and r.overdue}">
+                                <span class="badge-dot"></span>Overdue
+                            </span>
+                            <span class="badge badge-success" th:if="${r.status.name() == 'ISSUED' and !r.overdue}">
+                                <span class="badge-dot"></span>Active Loan
+                            </span>
+                        </td>
+                        <td>
+                            <span th:if="${r.fineAmount > 0}">
+                                <strong style="color:var(--danger);" th:text="'₹' + ${#numbers.formatDecimal(r.fineAmount, 1, 2)}"></strong>
+                                <span class="badge badge-success" style="margin-left:4px;" th:if="${r.finePaid}">Paid</span>
+                                <span class="badge badge-danger" style="margin-left:4px;" th:unless="${r.finePaid}">Unpaid</span>
+                            </span>
+                            <span th:unless="${r.fineAmount > 0}" style="color:var(--text-dim);">—</span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:if="${r.status.name() == 'ISSUED'}" th:action="@{/user/books/return/{id}(id=${r.id})}" method="post">
+                                    <button type="submit" class="btn btn-primary btn-sm">Return Book</button>
+                                </form>
+                                <span th:if="${r.status.name() == 'RETURNED'}" style="color:var(--text-dim); font-size:0.85rem;">Completed</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(records)}">
+                        <td colspan="7" class="empty-state">
+                            <div class="empty-state-icon">📖</div>
+                            <h3>No Borrowing History</h3>
+                            <p>You haven't issued any books from the library yet.</p>
+                            <a class="btn btn-primary btn-sm" th:href="@{/user/catalogue}">Browse the Catalogue</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Reservations')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('reservations')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Advance Bookings & Waitlists</h2>
+            <p class="page-subtitle">Track member reservations, automatic 48-hour holds, and waitlist queues.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book</th>
+                        <th>Member</th>
+                        <th>Reserved Date</th>
+                        <th>Status</th>
+                        <th>Hold Expires</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${reservations}">
+                        <td>
+                            <strong th:text="${r.book.title}"></strong>
+                            <div style="font-size:0.8rem; color:var(--text-muted);" th:text="'ISBN: ' + ${r.book.isbn}"></div>
+                        </td>
+                        <td>
+                            <div th:text="${r.user.fullName}"></div>
+                            <div style="font-size:0.8rem; color:var(--text-muted);" th:text="${r.user.email}"></div>
+                        </td>
+                        <td th:text="${#temporals.format(r.reservedAt, 'dd MMM yyyy, HH:mm')}"></td>
+                        <td>
+                            <span class="badge badge-muted" th:if="${r.status.name() == 'PENDING'}"><span class="badge-dot"></span>Waitlisted</span>
+                            <span class="badge badge-warning" th:if="${r.status.name() == 'READY'}"><span class="badge-dot"></span>Ready on Hold</span>
+                            <span class="badge badge-success" th:if="${r.status.name() == 'FULFILLED'}"><span class="badge-dot"></span>Claimed / Issued</span>
+                            <span class="badge badge-muted" th:if="${r.status.name() == 'CANCELLED'}"><span class="badge-dot"></span>Cancelled</span>
+                            <span class="badge badge-danger" th:if="${r.status.name() == 'EXPIRED'}"><span class="badge-dot"></span>Hold Expired</span>
+                        </td>
+                        <td th:text="${r.holdExpiresAt} ? ${#temporals.format(r.holdExpiresAt, 'dd MMM yyyy, HH:mm')} : '—'"></td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:if="${r.status.name() == 'PENDING' or r.status.name() == 'READY'}"
+                                      th:action="@{/admin/reservations/cancel/{id}(id=${r.id})}" method="post"
+                                      onsubmit="return confirm('Cancel this reservation?');">
+                                    <button type="submit" class="btn btn-outline btn-sm">Cancel</button>
+                                </form>
+                                <span th:unless="${r.status.name() == 'PENDING' or r.status.name() == 'READY'}" style="color:var(--text-dim); font-size:0.85rem;">—</span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(reservations)}">
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-state-icon">📋</div>
+                            <h3>No Reservations</h3>
+                            <p>There are no active or past advance booking records in the system.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>

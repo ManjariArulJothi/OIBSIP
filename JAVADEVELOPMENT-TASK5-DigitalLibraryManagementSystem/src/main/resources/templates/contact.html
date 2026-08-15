@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Contact Us')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: userNav('contact')}" th:if="${#authorization.expression('hasRole(''USER'')')}"></nav>
+<nav th:replace="~{fragments/header :: adminNav('messages')}" th:if="${#authorization.expression('hasRole(''ADMIN'')')}"></nav>
+
+<div class="container" style="max-width: 620px;">
+    <div class="page-header" style="margin-bottom: 20px;">
+        <div class="page-title-group">
+            <h2>Contact Library Support</h2>
+            <p class="page-subtitle">Have a question about loans, book recommendations, or library hours? Send us a message.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+        <form th:action="@{/contact}" th:object="${contactMessage}" method="post">
+            <div class="form-group">
+                <label>Your Full Name</label>
+                <input type="text" th:field="*{name}" class="form-control" placeholder="e.g. Jane Doe" required autofocus>
+                <div class="form-help" th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color:var(--danger);"></div>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" th:field="*{email}" class="form-control" placeholder="jane@example.com" required>
+                <div class="form-help" th:if="${#fields.hasErrors('email')}" th:errors="*{email}" style="color:var(--danger);"></div>
+            </div>
+            <div class="form-group">
+                <label>Subject</label>
+                <input type="text" th:field="*{subject}" class="form-control" placeholder="e.g. Book Acquisition Request" required>
+                <div class="form-help" th:if="${#fields.hasErrors('subject')}" th:errors="*{subject}" style="color:var(--danger);"></div>
+            </div>
+            <div class="form-group">
+                <label>Message</label>
+                <textarea th:field="*{message}" class="form-control" rows="5" placeholder="How can our librarians help you today?" required></textarea>
+                <div class="form-help" th:if="${#fields.hasErrors('message')}" th:errors="*{message}" style="color:var(--danger);"></div>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width:100%; margin-top:10px;">Send Message</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
+

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Messages')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('messages')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Member Inquiries & Contact Messages</h2>
+            <p class="page-subtitle">Read messages submitted through the library public contact form.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+    <div class="card" th:each="msg : ${messages}" style="position:relative; overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:12px;">
+            <div>
+                <h3 style="font-size:1.15rem; color:var(--text-main); margin-bottom:4px;" th:text="${msg.subject}"></h3>
+                <div style="color:var(--text-muted); font-size:0.85rem;">
+                    <strong>From:</strong> <span th:text="${msg.name}"></span> (<a th:href="'mailto:' + ${msg.email}" th:text="${msg.email}"></a>) ·
+                    <span th:text="${#temporals.format(msg.submittedAt, 'dd MMM yyyy, HH:mm')}"></span>
+                </div>
+            </div>
+            <div>
+                <span class="badge badge-success" th:if="${msg.resolved}">
+                    <span class="badge-dot"></span>Resolved
+                </span>
+                <span class="badge badge-warning" th:unless="${msg.resolved}">
+                    <span class="badge-dot"></span>New Inquiry
+                </span>
+            </div>
+        </div>
+        
+        <p style="background:var(--bg-page); padding:16px; border-radius:var(--radius-md); border:1px solid var(--border-light); font-size:0.95rem; line-height:1.6; color:var(--text-body); margin-bottom:16px;" th:text="${msg.message}"></p>
+        
+        <div style="display:flex; justify-content:flex-end;">
+            <form th:action="@{/admin/messages/resolve/{id}(id=${msg.id})}" method="post" th:unless="${msg.resolved}">
+                <button type="submit" class="btn btn-outline btn-sm">Mark as Resolved</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card empty-state" th:if="${#lists.isEmpty(messages)}">
+        <div class="empty-state-icon">💬</div>
+        <h3>No Messages</h3>
+        <p>No member inquiries or contact messages have been received yet.</p>
+    </div>
+</div>
+</body>
+</html>
+

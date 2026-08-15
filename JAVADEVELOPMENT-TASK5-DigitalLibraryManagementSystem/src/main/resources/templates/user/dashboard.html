@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Member Dashboard')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: userNav('dashboard')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Welcome to your Library Portal</h2>
+            <p class="page-subtitle">Track your current book loans, due dates, outstanding fines, and active reservations.</p>
+        </div>
+        <div>
+            <a class="btn btn-primary" th:href="@{/user/catalogue}">Browse Catalogue</a>
+        </div>
+    </div>
+
+    <div class="stat-grid">
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-sky">📖</div>
+            <div class="stat-info">
+                <div class="num" th:text="${totalIssued}">0</div>
+                <div class="label">Books With You</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-rose">💰</div>
+            <div class="stat-info">
+                <div class="num" th:text="'₹' + ${#numbers.formatDecimal(outstandingFine, 1, 2)}">₹0.00</div>
+                <div class="label">Running Overdue Fine</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon-wrapper stat-icon-amber">⏳</div>
+            <div class="stat-info">
+                <div class="num" th:text="${activeReservations}">0</div>
+                <div class="label">Active Waitlists</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Currently Borrowed Titles</h3>
+            <a class="btn btn-outline btn-sm" th:href="@{/user/my-books}">View Full History</a>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Book Title</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="r : ${activeBooks}">
+                        <td>
+                            <strong th:text="${r.book.title}"></strong>
+                            <div style="font-size:0.82rem; color:var(--text-muted);" th:text="'by ' + ${r.book.author}"></div>
+                        </td>
+                        <td th:text="${r.issueDate}"></td>
+                        <td th:text="${r.dueDate}"></td>
+                        <td>
+                            <span class="badge badge-danger" th:if="${r.overdue}">
+                                <span class="badge-dot"></span>Overdue
+                            </span>
+                            <span class="badge badge-success" th:unless="${r.overdue}">
+                                <span class="badge-dot"></span>Active Loan
+                            </span>
+                        </td>
+                        <td>
+                            <form th:action="@{/user/books/return/{id}(id=${r.id})}" method="post">
+                                <button type="submit" class="btn btn-primary btn-sm">Return Book</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(activeBooks)}">
+                        <td colspan="5" class="empty-state">
+                            <div class="empty-state-icon">📚</div>
+                            <h3>No Active Loans</h3>
+                            <p>You do not have any books checked out right now.</p>
+                            <a class="btn btn-primary btn-sm" th:href="@{/user/catalogue}">Explore the Catalogue</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

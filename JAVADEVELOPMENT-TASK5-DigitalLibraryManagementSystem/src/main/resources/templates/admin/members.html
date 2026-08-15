@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Members')}"></head>
+<body>
+<nav th:replace="~{fragments/header :: adminNav('members')}"></nav>
+
+<div class="container">
+    <div class="page-header">
+        <div class="page-title-group">
+            <h2>Registered Member Directory</h2>
+            <p class="page-subtitle">Manage user accounts, membership status, and access privileges.</p>
+        </div>
+    </div>
+
+    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+    <div class="alert alert-error" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+    <div class="card">
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Joined On</th>
+                        <th>Account Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="member : ${members}">
+                        <td><strong th:text="${member.fullName}"></strong></td>
+                        <td th:text="${member.email}"></td>
+                        <td th:text="${member.phone} ?: '—'"></td>
+                        <td th:text="${#temporals.format(member.createdAt, 'dd MMM yyyy')}"></td>
+                        <td>
+                            <span class="badge badge-success" th:if="${member.enabled}">
+                                <span class="badge-dot"></span>Active
+                            </span>
+                            <span class="badge badge-danger" th:unless="${member.enabled}">
+                                <span class="badge-dot"></span>Disabled
+                            </span>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:action="@{/admin/members/toggle/{id}(id=${member.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-outline btn-sm"
+                                            th:text="${member.enabled} ? 'Disable' : 'Enable'"></button>
+                                </form>
+                                <form th:action="@{/admin/members/delete/{id}(id=${member.id})}" method="post" style="display:inline;"
+                                      onsubmit="return confirm('Delete this member account? This action is permanent.');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(members)}">
+                        <td colspan="6" class="empty-state">
+                            <div class="empty-state-icon">👥</div>
+                            <h3>No Registered Members</h3>
+                            <p>No member accounts have been registered yet.</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

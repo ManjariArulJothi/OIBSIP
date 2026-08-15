@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Sign In')}"></head>
+<body>
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-brand-center">
+            <div class="brand-icon">📚</div>
+            <h1>Athenaeum</h1>
+            <p class="subtitle">Digital Library Management Portal</p>
+        </div>
+
+        <div class="alert alert-error" th:if="${param.error}">
+            Invalid email or password. Please try again.
+        </div>
+        <div class="alert alert-success" th:if="${param.logout}">
+            You have been signed out successfully.
+        </div>
+        <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" name="email" class="form-control" placeholder="name@example.com" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Sign In</button>
+        </form>
+
+        <div class="auth-footer">
+            Don't have an account? <a th:href="@{/register}">Join the Library</a>
+        </div>
+
+        <div class="demo-credentials-box">
+            <div style="font-weight:700; margin-bottom:4px; color:var(--text-main);">🔑 Demo Administrator Login:</div>
+            Email: <code>admin@library.com</code> &nbsp;|&nbsp; Pass: <code>admin123</code>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
